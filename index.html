@@ -9,13 +9,13 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --rose: #d94d6e;
+    --rose: #e05575;
     --rose-light: #f7d6de;
-    --rose-deep: #a61e3e;
+    --rose-deep: #b02444;
     --gold: #d4a45a;
     --gold-light: #f5e6c8;
     --cream: #fdf6f0;
-    --dark: #1a0a10;
+    --dark: #240e16;
     --text: #3d1520;
     --text-muted: #8a5060;
   }
@@ -97,7 +97,7 @@
   .intro-bg {
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 80% 60% at 50% 50%, #3d0818 0%, var(--dark) 70%);
+    background: radial-gradient(ellipse 80% 60% at 50% 50%, #4a0c1e 0%, var(--dark) 70%);
   }
 
   .intro-content {
@@ -501,7 +501,7 @@
   .final-bg {
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse 120% 80% at 50% 80%, #4d0820 0%, var(--dark) 60%);
+    background: radial-gradient(ellipse 120% 80% at 50% 80%, #5a0e28 0%, var(--dark) 60%);
   }
 
   .final-content {
@@ -707,21 +707,37 @@
     opacity: 0;
     animation: fadeIn 1s ease 3.2s forwards;
   }
-  .scroll-line {
-    width: 1px;
-    height: 50px;
-    background: linear-gradient(to bottom, var(--gold), transparent);
-    animation: scrollPulse 2s ease infinite;
+  .scroll-heart {
+    font-size: 20px;
+    animation: scrollHeartBeat 1.5s ease infinite;
+    filter: drop-shadow(0 0 8px rgba(200,80,106,0.4));
   }
-  @keyframes scrollPulse {
-    0%, 100% { opacity: 0.4; transform: scaleY(1); }
-    50% { opacity: 1; transform: scaleY(1.1); }
+  @keyframes scrollHeartBeat {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.2); opacity: 1; }
   }
   .scroll-text {
     font-size: 10px;
     letter-spacing: 3px;
     text-transform: uppercase;
     color: rgba(212,164,90,0.6);
+  }
+
+  /* HEART SCROLL PROGRESS */
+  #heart-progress {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+  }
+  #heart-progress.visible { opacity: 1; }
+  .heart-progress-icon {
+    font-size: 24px;
+    display: block;
+    transition: transform 0.1s ease;
   }
 
   /* CONFETTI CANVAS */
@@ -847,7 +863,12 @@
   </div>
   <div class="scroll-indicator">
     <div class="scroll-text">Scroll</div>
-    <div class="scroll-line"></div>
+    <div class="scroll-heart">🖤</div>
+  </div>
+
+  <!-- HEART SCROLL PROGRESS -->
+  <div id="heart-progress">
+    <span class="heart-progress-icon" id="heart-progress-icon">🖤</span>
   </div>
 </section>
 
@@ -922,6 +943,21 @@
       <div style="flex:1"></div>
     </div>
 
+  </div>
+</section>
+
+<!-- ===== SCREEN STARS ===== -->
+<section class="screen" id="screen-stars" style="min-height: auto; padding: 100px 20px; position: relative; overflow: hidden;">
+  <div style="position: absolute; inset: 0; background: radial-gradient(ellipse 100% 80% at 50% 50%, #2a0e18 0%, var(--dark) 70%); z-index: 0;"></div>
+  <div style="position: relative; z-index: 2; text-align: center; max-width: 800px; margin: 0 auto;">
+    <div style="font-size: 11px; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 2rem;">20 Mars</div>
+    <div class="section-title" style="margin-bottom: 1rem;">Écrit dans les <em>étoiles</em></div>
+    <div style="font-family: 'Cormorant Garamond', serif; font-size: clamp(16px, 3vw, 22px); color: rgba(255,255,255,0.5); margin-bottom: 3rem; font-style: italic;">La nuit où tout a changé</div>
+    <div id="star-canvas-container" style="position: relative; width: 100%; max-width: 500px; height: 400px; margin: 0 auto;">
+      <canvas id="star-canvas" style="width: 100%; height: 100%;"></canvas>
+      <div id="star-tooltip" style="position: absolute; pointer-events: none; opacity: 0; transition: opacity 0.3s; font-family: 'Cormorant Garamond', serif; font-size: 14px; color: var(--gold); background: rgba(26,10,16,0.85); padding: 6px 14px; border: 1px solid rgba(212,164,90,0.3); border-radius: 2px; white-space: nowrap; z-index: 10;"></div>
+    </div>
+    <div style="margin-top: 2rem; font-size: 12px; color: rgba(255,255,255,0.3); letter-spacing: 2px;">Déplace ta souris sur les étoiles</div>
   </div>
 </section>
 
@@ -1017,6 +1053,71 @@
 })();
 </script>
 
+<!-- ===== SCREEN COUNTDOWN ===== -->
+<section class="screen" id="screen-countdown" style="min-height: auto; padding: 100px 20px; background: var(--cream);">
+  <div style="max-width: 700px; margin: 0 auto; text-align: center;">
+    <div style="font-size: 11px; letter-spacing: 5px; text-transform: uppercase; color: var(--rose); margin-bottom: 2rem;">Depuis le 20 Mars</div>
+    <div class="section-title" style="color: var(--text); margin-bottom: 3rem;">Notre temps <em style="color:var(--rose)">ensemble</em></div>
+    <div id="countdown-clock" style="display: flex; justify-content: center; gap: clamp(12px, 3vw, 32px); flex-wrap: wrap;">
+      <div class="clock-unit">
+        <div class="clock-number" id="cd-days">0</div>
+        <div class="clock-label">Jours</div>
+      </div>
+      <div class="clock-sep">:</div>
+      <div class="clock-unit">
+        <div class="clock-number" id="cd-hours">0</div>
+        <div class="clock-label">Heures</div>
+      </div>
+      <div class="clock-sep">:</div>
+      <div class="clock-unit">
+        <div class="clock-number" id="cd-minutes">0</div>
+        <div class="clock-label">Minutes</div>
+      </div>
+      <div class="clock-sep">:</div>
+      <div class="clock-unit">
+        <div class="clock-number" id="cd-seconds">0</div>
+        <div class="clock-label">Secondes</div>
+      </div>
+    </div>
+    <div style="margin-top: 3rem; font-family: 'Cormorant Garamond', serif; font-size: clamp(16px, 3vw, 22px); color: var(--text-muted); font-style: italic;">Et ça ne fait que commencer.</div>
+  </div>
+</section>
+
+<style>
+  .clock-unit { text-align: center; }
+  .clock-number {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(48px, 10vw, 80px);
+    font-weight: 300;
+    color: var(--rose);
+    line-height: 1;
+    min-width: 80px;
+    transition: transform 0.3s ease;
+  }
+  .clock-number.tick { transform: scale(1.08); }
+  .clock-label {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 8px;
+  }
+  .clock-sep {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 8vw, 60px);
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+    align-self: flex-start;
+    margin-top: 8px;
+  }
+  @media (max-width: 640px) {
+    .clock-number { min-width: 50px; font-size: clamp(36px, 12vw, 60px); }
+    .clock-sep { font-size: clamp(28px, 10vw, 48px); margin-top: 4px; }
+    #screen-countdown { padding: 50px 20px; }
+  }
+</style>
+
 <!-- ===== SCREEN 4: MOTS ===== -->
 <section class="screen" id="screen-gallery" style="min-height: auto;">
   <div class="section-title" style="color:var(--text); margin-bottom: 2.5rem;">Ce que <em style="color:var(--rose)">t'es</em> pour moi</div>
@@ -1054,6 +1155,46 @@
   </div>
 </section>
 
+<!-- ===== SCREEN VINYL ===== -->
+<section class="screen" id="screen-vinyl" style="min-height: auto; padding: 100px 20px; background: var(--dark); position: relative; overflow: hidden;">
+  <div style="position: absolute; inset: 0; background: radial-gradient(ellipse 80% 60% at 50% 50%, #2a0e18 0%, var(--dark) 70%); z-index: 0;"></div>
+  <div style="position: relative; z-index: 2; text-align: center; max-width: 600px; margin: 0 auto;">
+    <div style="font-size: 11px; letter-spacing: 5px; text-transform: uppercase; color: var(--gold); margin-bottom: 2rem;">Notre musique</div>
+    <div class="section-title" style="margin-bottom: 3rem;">La bande-son de <em>nous</em></div>
+
+    <a href="https://open.spotify.com/" target="_blank" id="vinyl-link" style="text-decoration: none; display: inline-block; position: relative;">
+      <div id="vinyl-record" style="width: clamp(180px, 40vw, 280px); height: clamp(180px, 40vw, 280px); border-radius: 50%; background: conic-gradient(from 0deg, #1a1a1a, #333, #1a1a1a, #222, #1a1a1a); position: relative; margin: 0 auto; box-shadow: 0 20px 60px rgba(0,0,0,0.5); transition: transform 0.4s ease;">
+        <!-- Grooves -->
+        <div style="position: absolute; inset: 8%; border-radius: 50%; border: 1px solid rgba(255,255,255,0.06);"></div>
+        <div style="position: absolute; inset: 12%; border-radius: 50%; border: 1px solid rgba(255,255,255,0.05);"></div>
+        <div style="position: absolute; inset: 16%; border-radius: 50%; border: 1px solid rgba(255,255,255,0.04);"></div>
+        <div style="position: absolute; inset: 20%; border-radius: 50%; border: 1px solid rgba(255,255,255,0.05);"></div>
+        <div style="position: absolute; inset: 24%; border-radius: 50%; border: 1px solid rgba(255,255,255,0.04);"></div>
+        <div style="position: absolute; inset: 28%; border-radius: 50%; border: 1px solid rgba(255,255,255,0.03);"></div>
+        <!-- Label -->
+        <div style="position: absolute; inset: 32%; border-radius: 50%; background: linear-gradient(135deg, var(--rose-deep), var(--rose)); display: flex; align-items: center; justify-content: center; flex-direction: column;">
+          <div style="font-family: 'Cormorant Garamond', serif; font-size: clamp(10px, 2vw, 14px); color: rgba(255,255,255,0.8); font-style: italic;">Hor</div>
+          <div style="width: 20px; height: 1px; background: rgba(255,255,255,0.3); margin: 4px 0;"></div>
+          <div style="font-size: clamp(7px, 1.5vw, 10px); color: rgba(255,255,255,0.5); letter-spacing: 1px;">20 Mars</div>
+        </div>
+        <!-- Center hole -->
+        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 8px; height: 8px; background: var(--dark); border-radius: 50%;"></div>
+      </div>
+    </a>
+
+    <div style="margin-top: 2.5rem; font-family: 'Cormorant Garamond', serif; font-size: clamp(16px, 3vw, 22px); color: rgba(255,255,255,0.4); font-style: italic;">Clique pour écouter</div>
+  </div>
+</section>
+
+<style>
+  @keyframes vinylSpin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  #vinyl-record.spinning { animation: vinylSpin 4s linear infinite; }
+  #vinyl-link:hover #vinyl-record { transform: scale(1.05); }
+  @media (max-width: 640px) {
+    #screen-vinyl { padding: 50px 20px; }
+  }
+</style>
+
 <!-- ===== SCREEN 5: FINAL ===== -->
 <section class="screen" id="screen-final">
   <div class="final-bg"></div>
@@ -1064,7 +1205,7 @@
       <em>Anniversaire</em>
     </div>
     <div class="final-quote">
-      T'as pas besoin d'essayer.<br>T'es juste toi — et ça suffit largement.
+      "T'as pas besoin d'essayer.<br>T'es juste toi — et ça suffit largement."
     </div>
     <div class="final-hearts">
       <span>🖤</span>
@@ -1274,6 +1415,270 @@ document.addEventListener('keydown', e => {
     document.getElementById('candles-screen').classList.remove('active');
   }
 });
+
+// ===== STAR MAP =====
+(function() {
+  const canvas = document.getElementById('star-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const container = document.getElementById('star-canvas-container');
+  const tooltip = document.getElementById('star-tooltip');
+
+  function resize() {
+    const rect = container.getBoundingClientRect();
+    canvas.width = rect.width * 2;
+    canvas.height = rect.height * 2;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+    ctx.scale(2, 2);
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  const stars = [
+    { x: 0.5, y: 0.2, r: 2.5, name: "Nous", bright: true },
+    { x: 0.25, y: 0.35, r: 1.5, name: "Le banc" },
+    { x: 0.75, y: 0.3, r: 1.8, name: "Les rires" },
+    { x: 0.15, y: 0.6, r: 1.2, name: "Les disputes" },
+    { x: 0.85, y: 0.55, r: 1.5, name: "Le 20 Mars" },
+    { x: 0.4, y: 0.75, r: 1.3, name: "L'avenir" },
+    { x: 0.65, y: 0.8, r: 1.4, name: "Toujours" },
+    { x: 0.5, y: 0.5, r: 2, name: "Hor", bright: true, color: '#e05575' },
+    { x: 0.3, y: 0.15, r: 1, name: "" },
+    { x: 0.7, y: 0.18, r: 1.2, name: "" },
+    { x: 0.2, y: 0.45, r: 0.8, name: "" },
+    { x: 0.8, y: 0.4, r: 0.9, name: "" },
+    { x: 0.35, y: 0.55, r: 1, name: "" },
+    { x: 0.6, y: 0.65, r: 0.8, name: "" },
+    { x: 0.45, y: 0.9, r: 1.1, name: "" },
+    { x: 0.55, y: 0.1, r: 0.7, name: "" },
+    { x: 0.1, y: 0.75, r: 0.9, name: "" },
+    { x: 0.9, y: 0.7, r: 0.8, name: "" },
+  ];
+
+  const connections = [
+    [0, 1], [0, 2], [0, 7], [1, 3], [2, 4], [3, 5], [4, 6], [5, 6], [7, 5], [7, 6]
+  ];
+
+  let drawn = 0;
+  let animating = false;
+  let hoveredStar = null;
+
+  function drawStar(s, progress) {
+    const w = canvas.width / 2;
+    const h = canvas.height / 2;
+    const x = s.x * w;
+    const y = s.y * h;
+    const r = s.r * progress;
+    const alpha = progress;
+
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = s.color || (s.bright ? '#fff' : 'rgba(255,255,255,' + (0.6 * alpha) + ')');
+    ctx.fill();
+
+    if (s.bright && progress > 0.5) {
+      ctx.beginPath();
+      ctx.arc(x, y, r * 3, 0, Math.PI * 2);
+      const grad = ctx.createRadialGradient(x, y, 0, x, y, r * 3);
+      grad.addColorStop(0, s.color ? 'rgba(224,85,117,0.3)' : 'rgba(255,255,255,0.15)');
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad;
+      ctx.fill();
+    }
+  }
+
+  function drawConnection(a, b, progress) {
+    const w = canvas.width / 2;
+    const h = canvas.height / 2;
+    ctx.beginPath();
+    ctx.moveTo(stars[a].x * w, stars[a].y * h);
+    ctx.lineTo(stars[b].x * w, stars[b].y * h);
+    ctx.strokeStyle = 'rgba(212,164,90,' + (0.2 * progress) + ')';
+    ctx.lineWidth = 0.5;
+    ctx.stroke();
+  }
+
+  function render() {
+    const w = canvas.width / 2;
+    const h = canvas.height / 2;
+    ctx.clearRect(0, 0, w, h);
+
+    // Draw connections
+    connections.forEach((c, i) => {
+      const p = Math.max(0, Math.min(1, (drawn - i * 8 - 20) / 30));
+      drawConnection(c[0], c[1], p);
+    });
+
+    // Draw stars
+    stars.forEach((s, i) => {
+      const p = Math.max(0, Math.min(1, (drawn - i * 12) / 40));
+      drawStar(s, p);
+    });
+
+    if (animating && drawn < 400) {
+      drawn += 1.5;
+      requestAnimationFrame(render);
+    }
+  }
+
+  // Intersection observer to start animation
+  const starObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && !animating) {
+        animating = true;
+        render();
+      }
+    });
+  }, { threshold: 0.3 });
+  starObs.observe(document.getElementById('screen-stars'));
+
+  // Hover detection
+  canvas.addEventListener('mousemove', e => {
+    const rect = canvas.getBoundingClientRect();
+    const mx = (e.clientX - rect.left) * 2;
+    const my = (e.clientY - rect.top) * 2;
+    const w = canvas.width;
+    const h = canvas.height;
+
+    let found = null;
+    stars.forEach(s => {
+      if (!s.name) return;
+      const sx = s.x * w / 2;
+      const sy = s.y * h / 2;
+      const dist = Math.sqrt((mx - sx) ** 2 + (my - sy) ** 2);
+      if (dist < 25) found = s;
+    });
+
+    if (found !== hoveredStar) {
+      hoveredStar = found;
+      if (found) {
+        tooltip.textContent = found.name;
+        tooltip.style.opacity = '1';
+        tooltip.style.left = (e.clientX - rect.left + 15) + 'px';
+        tooltip.style.top = (e.clientY - rect.top - 10) + 'px';
+      } else {
+        tooltip.style.opacity = '0';
+      }
+    } else if (found) {
+      tooltip.style.left = (e.clientX - rect.left + 15) + 'px';
+      tooltip.style.top = (e.clientY - rect.top - 10) + 'px';
+    }
+  });
+
+  canvas.addEventListener('mouseleave', () => {
+    hoveredStar = null;
+    tooltip.style.opacity = '0';
+  });
+})();
+
+// ===== COUNTDOWN CLOCK =====
+(function() {
+  const startDate = new Date('2024-03-20T00:00:00');
+  const daysEl = document.getElementById('cd-days');
+  const hoursEl = document.getElementById('cd-hours');
+  const minsEl = document.getElementById('cd-minutes');
+  const secsEl = document.getElementById('cd-seconds');
+
+  if (!daysEl) return;
+
+  let lastSec = -1;
+
+  function update() {
+    const now = new Date();
+    const diff = now - startDate;
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+    daysEl.textContent = days;
+    hoursEl.textContent = String(hours).padStart(2, '0');
+    minsEl.textContent = String(mins).padStart(2, '0');
+
+    if (secs !== lastSec) {
+      secsEl.textContent = String(secs).padStart(2, '0');
+      secsEl.classList.add('tick');
+      setTimeout(() => secsEl.classList.remove('tick'), 300);
+      lastSec = secs;
+    }
+
+    requestAnimationFrame(update);
+  }
+
+  // Start when visible
+  const cdObs = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        update();
+        cdObs.disconnect();
+      }
+    });
+  }, { threshold: 0.3 });
+  cdObs.observe(document.getElementById('screen-countdown'));
+})();
+
+// ===== VINYL RECORD =====
+(function() {
+  const vinyl = document.getElementById('vinyl-record');
+  const link = document.getElementById('vinyl-link');
+  if (!vinyl) return;
+
+  let spinning = false;
+
+  link.addEventListener('mouseenter', () => {
+    vinyl.classList.add('spinning');
+    spinning = true;
+  });
+  link.addEventListener('mouseleave', () => {
+    vinyl.classList.remove('spinning');
+    spinning = false;
+  });
+})();
+
+// ===== HEART SCROLL PROGRESS =====
+(function() {
+  const heartProgress = document.getElementById('heart-progress');
+  const heartIcon = document.getElementById('heart-progress-icon');
+  if (!heartProgress) return;
+
+  let lastScroll = 0;
+  let ticking = false;
+
+  function updateHeart() {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+
+    // Show after scrolling a bit
+    if (scrollTop > 300) {
+      heartProgress.classList.add('visible');
+    } else {
+      heartProgress.classList.remove('visible');
+    }
+
+    // Heart beats faster when scrolling fast
+    const velocity = Math.abs(scrollTop - lastScroll);
+    const beatDuration = Math.max(0.3, 1.5 - velocity * 0.02);
+    heartIcon.style.animation = `scrollHeartBeat ${beatDuration}s ease infinite`;
+
+    lastScroll = scrollTop;
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      requestAnimationFrame(updateHeart);
+      ticking = true;
+    }
+  });
+})();
+
+// ===== HIDDEN CONSOLE MESSAGE =====
+console.log('%c🖤', 'font-size: 40px');
+console.log('%cSi tu lis ça, c'est que tu cherches vraiment.', 'font-family: Cormorant Garamond; font-size: 16px; color: #e05575; font-style: italic;');
+console.log('%cJe t'aime, Hor.', 'font-family: Cormorant Garamond; font-size: 20px; color: #d4a45a; font-weight: bold;');
 </script>
 </body>
 </html>
