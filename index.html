@@ -753,13 +753,49 @@
   }
 
   @media (max-width: 640px) {
-    .timeline::before { left: 20px; }
-    .timeline-item, .timeline-item.right { flex-direction: row; transform: translateX(-20px); }
+    /* ===== TIMELINE MOBILE ===== */
+    .timeline::before { display: none; }
+    .timeline-item, .timeline-item.right {
+      flex-direction: column;
+      transform: none;
+      margin-bottom: 2.5rem;
+      gap: 0.75rem;
+    }
     .timeline-item.right .timeline-content { text-align: left; }
-    .timeline-dot { margin-top: 24px; }
-    .gallery-grid { grid-template-columns: repeat(2, 1fr); }
-    .gallery-card.big { grid-column: span 2; }
-    .gallery-card.last-card { grid-column: span 2; aspect-ratio: auto; min-height: 120px; }
+    .timeline-dot { display: none; }
+    .timeline-content {
+      width: 100%;
+      padding: 20px 22px;
+    }
+
+    /* ===== GALLERY MOBILE ===== */
+    .gallery-grid { grid-template-columns: 1fr; }
+    .gallery-card.big {
+      grid-column: span 1;
+      grid-row: span 1;
+      min-height: 160px;
+    }
+    .gallery-card.last-card { grid-column: span 1; }
+    .gallery-card { min-height: 140px; }
+    .gallery-card.big .gallery-word { font-size: 28px; }
+    .gallery-word { font-size: 20px; }
+
+    /* ===== LETTER MOBILE ===== */
+    .letter-box { padding: 40px 24px; }
+    .letter-salut { font-size: 32px; }
+    .letter-body { font-size: 17px; line-height: 1.8; }
+    .letter-sign { font-size: 22px; }
+
+    /* ===== INTRO MOBILE ===== */
+    .main-name { letter-spacing: -1px; }
+    .sub-name { letter-spacing: 4px; }
+
+    /* ===== FINAL MOBILE ===== */
+    .final-big { font-size: clamp(42px, 14vw, 80px); }
+    .final-quote { font-size: clamp(16px, 5vw, 22px); }
+
+    /* ===== PORTRAIT MOBILE ===== */
+    #screen-portrait { min-height: 80vh; }
   }
 </style>
 </head>
